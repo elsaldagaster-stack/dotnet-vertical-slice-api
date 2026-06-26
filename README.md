@@ -1,6 +1,6 @@
 # TaskFlow API
 
-![CI](https://github.com/YOUR_USERNAME/dotnet-vertical-slice-api/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/elsaldagaster-stack/dotnet-vertical-slice-api/actions/workflows/ci.yml/badge.svg)
 
 Task management REST API built with **Vertical Slice Architecture** + **CQRS** + **MediatR** in .NET 10.
 
@@ -24,7 +24,7 @@ graph TD
 Prerequisites: Docker Desktop
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/dotnet-vertical-slice-api
+git clone https://github.com/elsaldagaster-stack/dotnet-vertical-slice-api
 cd dotnet-vertical-slice-api
 docker compose up -d
 ```
