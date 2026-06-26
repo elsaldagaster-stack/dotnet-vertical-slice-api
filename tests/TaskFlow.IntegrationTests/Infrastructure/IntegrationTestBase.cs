@@ -65,15 +65,14 @@ public abstract class IntegrationTestBase : IClassFixture<TestWebApplicationFact
 
     protected async Task<Issue> CreateIssueAsync(Guid projectId, Guid reporterId, string title = "Test Issue")
     {
-        var issue = new Issue
-        {
-            Id = Guid.NewGuid(),
-            Title = title,
-            ProjectId = projectId,
-            ReporterId = reporterId,
-            CreatedAt = DateTimeOffset.UtcNow,
-            UpdatedAt = DateTimeOffset.UtcNow
-        };
+        var issue = new Issue(
+            Guid.NewGuid(),
+            title,
+            IssueType.Task,
+            IssuePriority.Medium,
+            projectId,
+            reporterId
+        );
         Db.Issues.Add(issue);
         await Db.SaveChangesAsync();
         Db.Entry(issue).State = EntityState.Detached;

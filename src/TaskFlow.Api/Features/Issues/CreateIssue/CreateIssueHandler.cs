@@ -16,18 +16,15 @@ public sealed class CreateIssueHandler(AppDbContext db) : IRequestHandler<Create
         var reporterExists = await db.Users.AnyAsync(u => u.Id == request.ReporterId, cancellationToken);
         if (!reporterExists) throw new KeyNotFoundException($"User '{request.ReporterId}' not found.");
 
-        var issue = new Issue
-        {
-            Id = Guid.NewGuid(),
-            Title = request.Title,
-            Description = request.Description,
-            Priority = request.Priority,
-            Type = request.Type,
-            ProjectId = request.ProjectId,
-            ReporterId = request.ReporterId,
-            CreatedAt = DateTimeOffset.UtcNow,
-            UpdatedAt = DateTimeOffset.UtcNow
-        };
+        var issue = new Issue(
+            Guid.NewGuid(),
+            request.Title,
+            request.Type,
+            request.Priority,
+            request.ProjectId,
+            request.ReporterId,
+            request.Description
+        );
 
         db.Issues.Add(issue);
         await db.SaveChangesAsync(cancellationToken);

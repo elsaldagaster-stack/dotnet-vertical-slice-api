@@ -5,18 +5,39 @@ namespace TaskFlow.Api.Domain.Entities;
 
 public class Issue
 {
-    public Guid Id { get; set; }
-    public string Title { get; set; } = string.Empty;
-    public string? Description { get; set; }
-    public IssueStatus Status { get; private set; } = IssueStatus.Backlog;
-    public IssuePriority Priority { get; set; } = IssuePriority.Medium;
-    public IssueType Type { get; set; } = IssueType.Task;
-    public Guid ProjectId { get; set; }
-    public Guid ReporterId { get; set; }
-    public Guid? AssigneeId { get; set; }
-    public DateTimeOffset CreatedAt { get; set; }
-    public DateTimeOffset UpdatedAt { get; set; }
+    private Issue() { }
 
+    public Issue(
+        Guid id,
+        string title,
+        IssueType type,
+        IssuePriority priority,
+        Guid projectId,
+        Guid reporterId,
+        string? description = null)
+    {
+        Id = id;
+        Title = title;
+        Type = type;
+        Priority = priority;
+        ProjectId = projectId;
+        ReporterId = reporterId;
+        Description = description;
+    }
+
+    public Guid Id { get; private set; }
+    public string Title { get; private set; } = string.Empty;
+    public string? Description { get; private set; }
+    public IssueType Type { get; private set; }
+    public IssuePriority Priority { get; private set; }
+    public IssueStatus Status { get; private set; } = IssueStatus.Backlog;
+    public Guid ProjectId { get; private set; }
+    public Guid ReporterId { get; private set; }
+    public Guid? AssigneeId { get; private set; }
+    public DateTimeOffset CreatedAt { get; private set; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset UpdatedAt { get; private set; } = DateTimeOffset.UtcNow;
+
+    // Navigation properties — public set required by EF Core
     public Project Project { get; set; } = null!;
     public User Reporter { get; set; } = null!;
     public User? Assignee { get; set; }
@@ -50,6 +71,15 @@ public class Issue
             throw new DomainException("Cannot reassign a closed issue.");
 
         AssigneeId = assigneeId;
+        UpdatedAt = DateTimeOffset.UtcNow;
+    }
+
+    public void Update(string title, string? description, IssuePriority priority, IssueType type)
+    {
+        Title = title;
+        Description = description;
+        Priority = priority;
+        Type = type;
         UpdatedAt = DateTimeOffset.UtcNow;
     }
 }

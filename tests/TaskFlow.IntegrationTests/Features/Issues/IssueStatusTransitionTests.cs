@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
+using TaskFlow.Api.Domain.Enums;
 using TaskFlow.IntegrationTests.Infrastructure;
 
 namespace TaskFlow.IntegrationTests.Features.Issues;
@@ -16,7 +17,7 @@ public class IssueStatusTransitionTests(TestWebApplicationFactory factory)
         var issue = await CreateIssueAsync(project.Id, user.Id);
 
         var response = await Client.PatchAsJsonAsync($"/api/issues/{issue.Id}/status",
-            new { targetStatus = 1 });
+            new { targetStatus = (int)IssueStatus.InProgress });
 
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
     }
@@ -29,7 +30,7 @@ public class IssueStatusTransitionTests(TestWebApplicationFactory factory)
         var issue = await CreateIssueAsync(project.Id, user.Id);
 
         var response = await Client.PatchAsJsonAsync($"/api/issues/{issue.Id}/status",
-            new { targetStatus = 3 });
+            new { targetStatus = (int)IssueStatus.Done });
 
         response.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
     }
@@ -41,12 +42,12 @@ public class IssueStatusTransitionTests(TestWebApplicationFactory factory)
         var project = await CreateProjectAsync();
         var issue = await CreateIssueAsync(project.Id, user.Id);
 
-        await Client.PatchAsJsonAsync($"/api/issues/{issue.Id}/status", new { targetStatus = 1 });
-        await Client.PatchAsJsonAsync($"/api/issues/{issue.Id}/status", new { targetStatus = 2 });
-        await Client.PatchAsJsonAsync($"/api/issues/{issue.Id}/status", new { targetStatus = 3 });
+        await Client.PatchAsJsonAsync($"/api/issues/{issue.Id}/status", new { targetStatus = (int)IssueStatus.InProgress });
+        await Client.PatchAsJsonAsync($"/api/issues/{issue.Id}/status", new { targetStatus = (int)IssueStatus.InReview });
+        await Client.PatchAsJsonAsync($"/api/issues/{issue.Id}/status", new { targetStatus = (int)IssueStatus.Done });
 
         var response = await Client.PatchAsJsonAsync($"/api/issues/{issue.Id}/status",
-            new { targetStatus = 4 });
+            new { targetStatus = (int)IssueStatus.Closed });
 
         response.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
     }

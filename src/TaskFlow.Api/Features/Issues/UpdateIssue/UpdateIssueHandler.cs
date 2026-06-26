@@ -11,11 +11,7 @@ public sealed class UpdateIssueHandler(AppDbContext db) : IRequestHandler<Update
         var issue = await db.Issues.FirstOrDefaultAsync(i => i.Id == request.Id, cancellationToken)
             ?? throw new KeyNotFoundException($"Issue '{request.Id}' not found.");
 
-        issue.Title = request.Title;
-        issue.Description = request.Description;
-        issue.Priority = request.Priority;
-        issue.Type = request.Type;
-        issue.UpdatedAt = DateTimeOffset.UtcNow;
+        issue.Update(request.Title, request.Description, request.Priority, request.Type);
 
         await db.SaveChangesAsync(cancellationToken);
         return Unit.Value;
