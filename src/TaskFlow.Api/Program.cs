@@ -1,5 +1,7 @@
 using Scalar.AspNetCore;
 using Serilog;
+using Microsoft.EntityFrameworkCore;
+using TaskFlow.Api.Infrastructure.Persistence;
 using TaskFlow.Api.Features.Users.RegisterUser;
 using TaskFlow.Api.Features.Users.GetUsers;
 using TaskFlow.Api.Features.Projects.CreateProject;
@@ -38,6 +40,9 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
+    using var scope = app.Services.CreateScope();
+    scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.Migrate();
+
     app.MapOpenApi();
     app.MapScalarApiReference();
 }

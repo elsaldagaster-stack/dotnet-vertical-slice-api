@@ -30,7 +30,7 @@ docker compose up -d
 ```
 
 API available at: `http://localhost:8080`  
-API docs (Scalar): `http://localhost:8080/scalar`  
+API docs (Scalar): `http://localhost:8080/scalar/v1`  
 Logs (Seq): `http://localhost:8081`
 
 ## Key Endpoints
@@ -76,13 +76,30 @@ Features/
 
 Each slice owns everything it needs. No shared application layer.
 
+## Local Development
+
+Start only the database:
+
+```bash
+docker compose up postgres -d
+```
+
+Run the API — migrations apply automatically on startup:
+
+```bash
+dotnet run --project src/TaskFlow.Api
+```
+
+API available at: `https://localhost:5001`  
+API docs (Scalar): `https://localhost:5001/scalar/v1`
+
 ## Running Tests
 
 ```bash
 dotnet test tests/TaskFlow.IntegrationTests
 ```
 
-Tests use Testcontainers — real PostgreSQL, no mocks. 24/24 tests pass.
+Tests use Testcontainers — real PostgreSQL, no mocks. No manual database setup needed.
 
 ## Tech Stack
 
